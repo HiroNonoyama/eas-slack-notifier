@@ -32,8 +32,8 @@ const getBuildMessage = ({
 };
 
 const getSubmitMessage = ({ id, projectName, submissionDetailsPageUrl, appId, archiveUrl, platform, status, submissionInfo }) => {
-  let title = `*Submission ${status} on ${projectName}*`
-  const text = `Submission ID: ${id}`
+  const title = `*Submission ${status} on ${projectName}*`
+  let text = `Submission ID: ${id}`
   text += `\nApp ID: ${appId}`
   text += `\nPlatform: ${platform}`
   text += `\nArchive: ${archiveUrl}`
@@ -76,7 +76,7 @@ app.post("/build", async (req, res) => {
 
   const { title, text } = getBuildMessage(req.body);
   try {
-    await axios.post(SLACK_WEBHOOK_URL, {
+    await axios.post(process.env.SLACK_WEBHOOK_URL, {
       channel: "#4-productdev_software",
       text: title,
       attachments: [
@@ -99,7 +99,7 @@ app.post("/submit", async (req, res) => {
 
   const { title, text } = getSubmitMessage(req.body);
   try {
-    await axios.post(SLACK_WEBHOOK_URL, {
+    await axios.post(process.env.SLACK_WEBHOOK_URL, {
       channel: "#4-productdev_software",
       text: title,
       attachments: [
