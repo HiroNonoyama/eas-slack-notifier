@@ -3,7 +3,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const safeCompare = require("safe-compare");
 const axios = require("axios");
-const functions = require("@google-cloud/functions-framework");
 
 const getBuildMessage = ({
   id,
@@ -67,7 +66,7 @@ const validateRequest = (req) => {
 };
 
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.text({ type: '*/*' }));
 app.post("/build", async (req, res) => {
   if (!validateRequest(req)) {
     res.status(500).send("Signatures didn't match!");
@@ -114,5 +113,8 @@ app.post("/submit", async (req, res) => {
     console.error("Error sending message:", error.message);
   }
 });
+app.get('/version', (req, res) => {
+  res.json({ version: "1.0.0" })
+})
 
-functions.http("notify_eas", app);
+app.listen(8080, () => console.log("Listening on port 8080"));
