@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-COPY index.js ./
+COPY src/ /app/src
 
 EXPOSE 8080
 

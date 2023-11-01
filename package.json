@@ -9,6 +9,6 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node src/index.js"
   }
 }
