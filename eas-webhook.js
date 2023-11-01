@@ -59,10 +59,10 @@ const getColor = (status) => {
 };
 
 const validateRequest = (req) => {
-  const expoSignature = req.headers["expo-signature"];
-  const hmac = crypto.createHmac("sha1", process.env.SECRET_WEBHOOK_KEY);
-  hmac.update(JSON.stringify(req.body));
-  const hash = `sha1=${hmac.digest("hex")}`;
+  const expoSignature = req.headers['expo-signature'];
+  const hmac = crypto.createHmac('sha1', process.env.SECRET_WEBHOOK_KEY);
+  hmac.update(req.body);
+  const hash = `sha1=${hmac.digest('hex')}`;
   return safeCompare(expoSignature, hash);
 };
 
