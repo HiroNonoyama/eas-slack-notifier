@@ -30,20 +30,29 @@ const getBuildMessage = ({
   return { title, text };
 };
 
-const getSubmitMessage = ({ id, projectName, submissionDetailsPageUrl, appId, archiveUrl, platform, status, submissionInfo }) => {
-  const title = `*Submission ${status} on ${projectName}*`
-  let text = `Submission ID: ${id}`
-  text += `\nApp ID: ${appId}`
-  text += `\nPlatform: ${platform}`
-  text += `\nArchive: ${archiveUrl}`
-  text += `\nSubmission Detail Page: ${submissionDetailsPageUrl}`
+const getSubmitMessage = ({
+  id,
+  projectName,
+  submissionDetailsPageUrl,
+  appId,
+  archiveUrl,
+  platform,
+  status,
+  submissionInfo,
+}) => {
+  const title = `*Submission ${status} on ${projectName}*`;
+  let text = `Submission ID: ${id}`;
+  text += `\nApp ID: ${appId}`;
+  text += `\nPlatform: ${platform}`;
+  text += `\nArchive: ${archiveUrl}`;
+  text += `\nSubmission Detail Page: ${submissionDetailsPageUrl}`;
   if (status === "errored") {
-    text += `\nError: ${submissionInfo.error.message}`
+    text += `\nError: ${submissionInfo.error.message}`;
   } else {
-    text += `\nLogs: ${submissionInfo.logsUrl}`
+    text += `\nLogs: ${submissionInfo.logsUrl}`;
   }
-  return { title, text }
-}
+  return { title, text };
+};
 
 const getColor = (status) => {
   switch (status) {
@@ -58,22 +67,23 @@ const getColor = (status) => {
 };
 
 const validateRequest = (req) => {
-  const expoSignature = req.headers['expo-signature'];
-  const hmac = crypto.createHmac('sha1', process.env.SECRET_WEBHOOK_KEY);
+  const expoSignature = req.headers["expo-signature"];
+  const hmac = crypto.createHmac("sha1", process.env.SECRET_WEBHOOK_KEY);
   hmac.update(req.body);
-  const hash = `sha1=${hmac.digest('hex')}`;
+  const hash = `sha1=${hmac.digest("hex")}`;
   return safeCompare(expoSignature, hash);
 };
 
 const app = express();
-app.use(bodyParser.text({ type: '*/*' }));
+app.use(bodyParser.text({ type: "*/*" }));
 app.post("/build", async (req, res) => {
   if (!validateRequest(req)) {
     res.status(500).send("Signatures didn't match!");
     return;
   }
 
-  const { title, text } = getBuildMessage(req.body);
+  const body = JSON.parse(req.body)
+  const { title, text } = getBuildMessage(body);
   try {
     await axios.post(process.env.SLACK_WEBHOOK_URL, {
       channel: "#4-productdev_software",
@@ -113,8 +123,8 @@ app.post("/submit", async (req, res) => {
     console.error("Error sending message:", error.message);
   }
 });
-app.get('/version', (req, res) => {
-  res.json({ version: "1.0.0" })
-})
+app.get("/version", (req, res) => {
+  res.json({ version: "1.0.0" });
+});
 
 app.listen(8080, () => console.log("Listening on port 8080"));
