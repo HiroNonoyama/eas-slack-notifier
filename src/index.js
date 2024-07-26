@@ -90,7 +90,7 @@ app.post("/build", async (req, res) => {
       text: title,
       attachments: [
         {
-          color: getColor(req.body.status),
+          color: getColor(body.status),
           text,
         },
       ],
@@ -106,14 +106,15 @@ app.post("/submit", async (req, res) => {
     return;
   }
 
-  const { title, text } = getSubmitMessage(req.body);
+  const body = JSON.parse(req.body)
+  const { title, text } = getSubmitMessage(body);
   try {
     await axios.post(process.env.SLACK_WEBHOOK_URL, {
       channel: "#4-productdev_software",
       text: title,
       attachments: [
         {
-          color: getColor(req.body.status),
+          color: getColor(body.status),
           text,
         },
       ],
